@@ -28,26 +28,12 @@ steps:
       - push
       - tag
   
-  # - name: publish_dry_run
-  #   image: plugins/docker:18
-  #   settings:
-  #     dry_run: true
-  #     dockerfile: docker/Dockerfile.linux.amd64
-  #     repo: meltwater/drone-convert-pathschanged
-  #   when:
-  #     event:
-  #     - pull_request
-  
   - name: publish
     image: plugins/docker:18
     settings:
       auto_tag: true
       insecure: true
       dockerfile: docker/Dockerfile.linux
-      # username:
-      #   from_secret: docker_username
-      # password:
-      #   from_secret: docker_password
       repo: docker-registry.dev:5000/drone-convert-pathschanged
     when:
       event:
@@ -57,4 +43,3 @@ steps:
   trigger:
     branch:
     - feature/arm64
-
