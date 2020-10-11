@@ -7,39 +7,39 @@ platform:
   arch: arm64
 
 steps:
-  - name: test
-    image: golang:1.12
-    commands:
-    - go test -coverprofile=cover.out -v ./...
-    - go tool cover -func=cover.out
-    when:
-      event:
-      - pull_request
-      - push
-      - tag
-  
-  - name: build
-    image: golang:1.12
-    commands:
-    - sh scripts/build.sh arm64
-    when:
-      event:
-      - pull_request
-      - push
-      - tag
-  
-  - name: publish
-    image: plugins/docker:18
-    settings:
-      auto_tag: true
-      insecure: true
-      dockerfile: docker/Dockerfile.linux
-      repo: docker-registry.dev:5000/drone-convert-pathschanged
-    when:
-      event:
-      - push
-      - tag
-  
-  trigger:
-    branch:
-    - feature/arm64
+- name: test
+  image: golang:1.12
+  commands:
+  - go test -coverprofile=cover.out -v ./...
+  - go tool cover -func=cover.out
+  when:
+    event:
+    - pull_request
+    - push
+    - tag
+
+- name: build
+  image: golang:1.12
+  commands:
+  - sh scripts/build.sh arm64
+  when:
+    event:
+    - pull_request
+    - push
+    - tag
+
+- name: publish
+  image: plugins/docker:18
+  settings:
+    auto_tag: true
+    insecure: true
+    dockerfile: docker/Dockerfile.linux
+    repo: docker-registry.dev:5000/drone-convert-pathschanged
+  when:
+    event:
+    - push
+    - tag
+
+trigger:
+  branch:
+  - feature/arm64
