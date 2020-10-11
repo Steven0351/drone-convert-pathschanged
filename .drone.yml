@@ -28,6 +28,21 @@ steps:
     - push
     - tag
 
+- name: publish_dry_run
+  image: plugins/docker:18
+  settings:
+    dry_run: true
+    insecure: true
+    dockerfile: docker/Dockerfile.linux
+    repo: docker-registry.dev:5000/drone-convert-pathschanged
+    build_args:
+    - arch=arm64
+  when:
+    event:
+    - pull_request
+    - push
+    - tag
+
 - name: publish
   image: plugins/docker:18
   settings:
@@ -35,6 +50,8 @@ steps:
     insecure: true
     dockerfile: docker/Dockerfile.linux
     repo: docker-registry.dev:5000/drone-convert-pathschanged
+    build_args:
+    - arch=arm64
   when:
     event:
     - push
@@ -42,4 +59,5 @@ steps:
 
 trigger:
   branch:
+  - master
   - feature/arm64
