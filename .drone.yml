@@ -18,7 +18,7 @@ steps:
 - name: build
   image: golang:1.12
   commands:
-  - sh scripts/build.sh
+  - sh scripts/build.sh amd64
   when:
     event:
     - pull_request
@@ -54,7 +54,62 @@ trigger:
   branch:
   - master
 ---
-kind: signature
-hmac: 6ce420165039ac25964fe0ce2480e8232d7c57327fe5abf8652826810f17ae52
+kind: pipeline
+type: docker
+name: arm64
 
-...
+platform:
+  arch: arm64
+
+steps:
+  - name: test
+    image: golang:1.12
+    commands:
+    - go test -coverprofile=cover.out -v ./...
+    - go tool cover -func=cover.out
+    when:
+      event:
+      - pull_request
+      - push
+      - tag
+  
+  - name: build
+    image: golang:1.12
+    commands:
+    - sh scripts/build.sh arm64
+    when:
+      event:
+      - pull_request
+      - push
+      - tag
+  
+  # - name: publish_dry_run
+  #   image: plugins/docker:18
+  #   settings:
+  #     dry_run: true
+  #     dockerfile: docker/Dockerfile.linux.amd64
+  #     repo: meltwater/drone-convert-pathschanged
+  #   when:
+  #     event:
+  #     - pull_request
+  
+  - name: publish
+    image: plugins/docker:18
+    settings:
+      auto_tag: true
+      insecure: true
+      dockerfile: docker/Dockerfile.linux
+      # username:
+      #   from_secret: docker_username
+      # password:
+      #   from_secret: docker_password
+      repo: docker-registry.dev:5000/drone-convert-pathschanged
+    when:
+      event:
+      - push
+      - tag
+  
+  trigger:
+    branch:
+    - feature/arm64
+

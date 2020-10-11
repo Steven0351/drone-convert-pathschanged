@@ -10,4 +10,4 @@ set -e
 set -x
 
 # linux
-GOOS=linux GOARCH=amd64 go build -o release/linux/amd64/drone-convert-pathschanged
+GOOS=linux GOARCH=$1 go build -o release/linux/amd64/drone-convert-pathschanged
