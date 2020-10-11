@@ -1,58 +1,58 @@
----
-kind: pipeline
-type: docker
-name: default
+# ---
+# kind: pipeline
+# type: docker
+# name: default
 
-steps:
-- name: test
-  image: golang:1.12
-  commands:
-  - go test -coverprofile=cover.out -v ./...
-  - go tool cover -func=cover.out
-  when:
-    event:
-    - pull_request
-    - push
-    - tag
+# steps:
+# - name: test
+#   image: golang:1.12
+#   commands:
+#   - go test -coverprofile=cover.out -v ./...
+#   - go tool cover -func=cover.out
+#   when:
+#     event:
+#     - pull_request
+#     - push
+#     - tag
 
-- name: build
-  image: golang:1.12
-  commands:
-  - sh scripts/build.sh amd64
-  when:
-    event:
-    - pull_request
-    - push
-    - tag
+# - name: build
+#   image: golang:1.12
+#   commands:
+#   - sh scripts/build.sh amd64
+#   when:
+#     event:
+#     - pull_request
+#     - push
+#     - tag
 
-- name: publish_dry_run
-  image: plugins/docker:18
-  settings:
-    dry_run: true
-    dockerfile: docker/Dockerfile.linux.amd64
-    repo: meltwater/drone-convert-pathschanged
-  when:
-    event:
-    - pull_request
+# - name: publish_dry_run
+#   image: plugins/docker:18
+#   settings:
+#     dry_run: true
+#     dockerfile: docker/Dockerfile.linux.amd64
+#     repo: meltwater/drone-convert-pathschanged
+#   when:
+#     event:
+#     - pull_request
 
-- name: publish
-  image: plugins/docker:18
-  settings:
-    auto_tag: true
-    dockerfile: docker/Dockerfile.linux.amd64
-    username:
-      from_secret: docker_username
-    password:
-      from_secret: docker_password
-    repo: meltwater/drone-convert-pathschanged
-  when:
-    event:
-    - push
-    - tag
+# - name: publish
+#   image: plugins/docker:18
+#   settings:
+#     auto_tag: true
+#     dockerfile: docker/Dockerfile.linux.amd64
+#     username:
+#       from_secret: docker_username
+#     password:
+#       from_secret: docker_password
+#     repo: meltwater/drone-convert-pathschanged
+#   when:
+#     event:
+#     - push
+#     - tag
 
-trigger:
-  branch:
-  - master
+# trigger:
+#   branch:
+#   - master
 
 ---
 kind: pipeline
