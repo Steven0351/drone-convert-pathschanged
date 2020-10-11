@@ -32,9 +32,10 @@ steps:
   image: plugins/docker:18
   settings:
     dry_run: true
-    insecure: true
     dockerfile: docker/Dockerfile.linux
+    registry: docker-registry.dev:5000
     repo: docker-registry.dev:5000/drone-convert-pathschanged
+    insecure: true
     build_args:
     - arch=arm64
   when:
@@ -49,6 +50,7 @@ steps:
     auto_tag: true
     insecure: true
     dockerfile: docker/Dockerfile.linux
+    registry: docker-registry.dev:5000
     repo: docker-registry.dev:5000/drone-convert-pathschanged
     build_args:
     - arch=arm64
